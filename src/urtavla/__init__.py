@@ -8,3 +8,7 @@ The name "urtavla" is Swedish for a clock face. A clock face shows the
 time on several dials, and each feature of this package can be viewed as
 one such dial.
 """
+
+from urtavla.cycle import cyclic_date
+
+__all__ = ("cyclic_date",)

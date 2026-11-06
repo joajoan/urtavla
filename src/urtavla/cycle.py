@@ -1,0 +1,174 @@
+"""Positions of a date on the unit circle.
+
+A position such as the day of the year runs from zero up to the length
+of the year, and then jumps back to zero. The functions in this module
+remove that jump. Each one turns a position into an angle and returns
+its sine and cosine, so that the end of a cycle lies next to its start.
+
+There are six cycles: the day of the year, the weekday, the day of the
+month, the month, and the week and the day of the ISO 8601 year. The
+`cyclic_date` function returns all six. Each position is divided by the
+true length of its cycle, so a month of 28 days and a month of 31 days
+both run the full circle.
+
+>>> import numpy as np
+>>> from urtavla.cycle import cyclic_date
+>>> ts = np.array(["2024-12-30"], dtype="datetime64[D]")
+>>> cyclic_date(ts).shape
+(1, 12)
+"""
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+import numpy as np
+
+from urtavla import cardinal, ordinal
+
+if TYPE_CHECKING:
+    from urtavla.typing import DtND, FloatND
+
+
+__all__ = (
+    "cyclic_calendar_day_of_month",
+    "cyclic_calendar_day_of_year",
+    "cyclic_calendar_month",
+    "cyclic_date",
+    "cyclic_day_of_week",
+    "cyclic_iso_day_of_year",
+    "cyclic_iso_week_of_year",
+    "unit_circle",
+)
+
+
+def unit_circle(turn: FloatND) -> FloatND:
+    """Map fractions of a turn to points on the unit circle.
+
+    Arguments:
+        turn: Fractions of a full turn, where 0 is the start and 1 is
+            one whole turn.
+
+    Returns:
+        Sine and cosine of each turn, stacked along a new last axis.
+    """
+    angle = 2.0 * np.pi * turn
+    sin = np.sin(angle)
+    cos = np.cos(angle)
+    return np.stack([sin, cos], axis=-1)
+
+
+def cyclic_calendar_day_of_year(timestamp: DtND) -> FloatND:
+    """Encode the day of the calendar year as a cycle.
+
+    Arguments:
+        timestamp: Timestamps of any shape and resolution.
+
+    Returns:
+        Sine and cosine of the position in the calendar year, each from
+        -1 to 1.
+    """
+    index = ordinal.calendar_day_of_year(timestamp)
+    total = cardinal.calendar_days_in_year(timestamp)
+    return unit_circle(index / total)
+
+
+def cyclic_day_of_week(timestamp: DtND) -> FloatND:
+    """Encode the weekday as a cycle, so Sunday sits beside Monday.
+
+    Arguments:
+        timestamp: Timestamps of any shape and resolution.
+
+    Returns:
+        Sine and cosine of the position in the week, each from -1 to 1.
+    """
+    index = ordinal.day_of_week(timestamp)
+    return unit_circle(index / 7)
+
+
+def cyclic_calendar_day_of_month(timestamp: DtND) -> FloatND:
+    """Encode the day of the calendar month as a cycle.
+
+    The position is divided by the length of the month itself, so a day
+    is a larger step in a short month than in a long one.
+
+    Arguments:
+        timestamp: Timestamps of any shape and resolution.
+
+    Returns:
+        Sine and cosine of the position in the month, each from -1 to 1.
+    """
+    index = ordinal.calendar_day_of_month(timestamp)
+    total = cardinal.calendar_days_in_month(timestamp)
+    return unit_circle(index / total)
+
+
+def cyclic_calendar_month(timestamp: DtND) -> FloatND:
+    """Encode the calendar month as a cycle, so December meets January.
+
+    Arguments:
+        timestamp: Timestamps of any shape and resolution.
+
+    Returns:
+        Sine and cosine of the position in the twelve months, each from
+        -1 to 1.
+    """
+    index = ordinal.calendar_month(timestamp)
+    return unit_circle(index / 12)
+
+
+def cyclic_iso_week_of_year(timestamp: DtND) -> FloatND:
+    """Encode the week of the ISO 8601 year as a cycle.
+
+    The position is divided by the number of weeks in the ISO year,
+    which is 52 or 53.
+
+    Arguments:
+        timestamp: Timestamps of any shape and resolution.
+
+    Returns:
+        Sine and cosine of the position in the ISO year, each from -1 to
+        1.
+    """
+    index = ordinal.iso_week_of_year(timestamp)
+    total = cardinal.iso_weeks_in_year(timestamp)
+    return unit_circle(index / total)
+
+
+def cyclic_iso_day_of_year(timestamp: DtND) -> FloatND:
+    """Encode the day of the ISO 8601 year as a cycle.
+
+    Arguments:
+        timestamp: Timestamps of any shape and resolution.
+
+    Returns:
+        Sine and cosine of the position in the ISO year, each from -1 to
+        1.
+    """
+    index = ordinal.iso_day_of_year(timestamp)
+    total = cardinal.iso_days_in_year(timestamp)
+    return unit_circle(index / total)
+
+
+def cyclic_date(timestamp: DtND) -> FloatND:
+    """Encode the date as all six cycles.
+
+    Arguments:
+        timestamp: Timestamps of any shape and resolution.
+
+    Returns:
+        Sine and cosine of each cycle, as twelve columns along a new
+        last axis. The cycles come in the order that their functions are
+        defined in this module.
+    """
+    return np.concatenate(
+        [
+            cyclic_calendar_day_of_year(timestamp),
+            cyclic_day_of_week(timestamp),
+            cyclic_calendar_day_of_month(timestamp),
+            cyclic_calendar_month(timestamp),
+            cyclic_iso_week_of_year(timestamp),
+            cyclic_iso_day_of_year(timestamp),
+        ],
+        axis=-1,
+    )
