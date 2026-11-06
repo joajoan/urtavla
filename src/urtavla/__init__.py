@@ -10,5 +10,6 @@ one such dial.
 """
 
 from urtavla.cycle import cyclic_date
+from urtavla.dummy import dummy_date
 
-__all__ = ("cyclic_date",)
+__all__ = ("cyclic_date", "dummy_date")
