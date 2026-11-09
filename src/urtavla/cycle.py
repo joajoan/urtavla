@@ -16,6 +16,15 @@ both run the full circle.
 >>> ts = np.array(["2024-12-30"], dtype="datetime64[D]")
 >>> cyclic_date(ts).shape
 (1, 12)
+
+The `dyadic_period` function lists periods that double from each to the
+next. The periods are meant for an encoding of the year at several
+scales. The shortest period sets how finely neighbouring years are told
+apart, and the longest sets the span after which the encoding repeats.
+
+>>> from urtavla.cycle import dyadic_period
+>>> dyadic_period(1, 5)
+array([ 2.,  4.,  8., 16., 32.])
 """
 
 from __future__ import annotations
@@ -38,6 +47,7 @@ __all__ = (
     "cyclic_day_of_week",
     "cyclic_iso_day_of_year",
     "cyclic_iso_week_of_year",
+    "dyadic_period",
     "unit_circle",
 )
 
@@ -172,3 +182,18 @@ def cyclic_date(timestamp: DtND) -> FloatND:
         ],
         axis=-1,
     )
+
+
+def dyadic_period(minimum: int, maximum: int) -> FloatND:
+    """Return periods that double from each to the next.
+
+    Arguments:
+        minimum: Exponent of the shortest period. The shortest period
+            sets how finely neighbouring years are told apart.
+        maximum: Exponent of the longest period. The encoding repeats
+            after the longest period.
+
+    Returns:
+        Periods in years, as powers of two, shortest first.
+    """
+    return 2.0 ** np.arange(minimum, maximum + 1, dtype=np.float64)
