@@ -1,0 +1,18 @@
+line-length = 80
+
+[lint]
+select = ["ALL"]
+ignore = [
+  "COM812",
+  "CPY001",
+  "D203",
+  "D213",
+  "D413",
+]
+
+[lint.pycodestyle]
+max-doc-length = 72
+
+[lint.per-file-ignores]
+"!**/src/**.py" = ["D"]
+"**/tests/**.py" = ["PLR0913", "PLR0917", "PLR2004", "S101"]
