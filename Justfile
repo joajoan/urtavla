@@ -12,3 +12,7 @@ check TARGET=".":
 format TARGET=".":
   uv run ruff check --fix {{TARGET}}
   uv run ruff format {{TARGET}}
+
+# Run the test suite
+test TARGET=".":
+  uv run pytest {{TARGET}}
