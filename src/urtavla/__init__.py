@@ -9,7 +9,7 @@ time on several dials, and each feature of this package can be viewed as
 one such dial.
 """
 
-from urtavla.cycle import cyclic_date, dyadic_period
+from urtavla.cycle import cyclic_date, cyclic_year, dyadic_period
 from urtavla.dummy import dummy_date
 
-__all__ = ("cyclic_date", "dummy_date", "dyadic_period")
+__all__ = ("cyclic_date", "cyclic_year", "dummy_date", "dyadic_period")

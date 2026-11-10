@@ -17,14 +17,19 @@ both run the full circle.
 >>> cyclic_date(ts).shape
 (1, 12)
 
-The `dyadic_period` function lists periods that double from each to the
-next. The periods are meant for an encoding of the year at several
-scales. The shortest period sets how finely neighbouring years are told
-apart, and the longest sets the span after which the encoding repeats.
+The year number does not repeat, so it has no cycle of its own. The
+`cyclic_year` function therefore measures the year against periods that
+the caller chooses, and returns a sine and a cosine for each period.
+Long periods keep nearby years close together, while short periods tell
+them apart. The `dyadic_period` function builds a set of periods that
+double from each to the next.
 
->>> from urtavla.cycle import dyadic_period
->>> dyadic_period(1, 5)
+>>> from urtavla.cycle import cyclic_year, dyadic_period
+>>> period = dyadic_period(1, 5)
+>>> period
 array([ 2.,  4.,  8., 16., 32.])
+>>> cyclic_year(ts, period).shape
+(1, 10)
 """
 
 from __future__ import annotations
@@ -47,6 +52,7 @@ __all__ = (
     "cyclic_day_of_week",
     "cyclic_iso_day_of_year",
     "cyclic_iso_week_of_year",
+    "cyclic_year",
     "dyadic_period",
     "unit_circle",
 )
@@ -197,3 +203,25 @@ def dyadic_period(minimum: int, maximum: int) -> FloatND:
         Periods in years, as powers of two, shortest first.
     """
     return 2.0 ** np.arange(minimum, maximum + 1, dtype=np.float64)
+
+
+def cyclic_year(timestamp: DtND, period: FloatND) -> FloatND:
+    """Encode the calendar year as one cycle per period.
+
+    The year changes in whole steps, which limits the useful periods. A
+    period of one year or shorter gives a constant result, and a period
+    of two years varies only in its cosine. The whole result repeats
+    after the longest period, so years are told apart only within that
+    span.
+
+    Arguments:
+        timestamp: Timestamps of any shape and resolution.
+        period: Period of each cycle, in years.
+
+    Returns:
+        Sine and cosine of the year for each period, in the order of the
+        periods.
+    """
+    year = ordinal.calendar_year(timestamp)[..., None]
+    array = unit_circle(year / period)
+    return array.reshape(*timestamp.shape, -1)
