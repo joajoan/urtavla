@@ -17,9 +17,21 @@ build-backend = "uv_build"
 [dependency-groups]
 dev = [
   {include-group = "lint"},
+  {include-group = "test"},
 ]
 lint = [
     "mdformat>=1.0.0",
     "ruff>=0.17.3",
     "ty>=0.0.97",
+]
+test = [
+    "pytest>=9.2.0",
+]
+
+[tool.pytest.ini_options]
+addopts = [
+  "--doctest-modules",
+]
+filterwarnings = [
+  "error::DeprecationWarning",
 ]
