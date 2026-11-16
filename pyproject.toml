@@ -2,6 +2,7 @@
 name = "urtavla"
 version = "0.1.0"
 description = "NumPy-based time feature extraction"
+readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [
@@ -33,6 +34,7 @@ test = [
 [tool.pytest.ini_options]
 addopts = [
   "--doctest-modules",
+  "--doctest-glob=README.md",
 ]
 filterwarnings = [
   "error::DeprecationWarning",
