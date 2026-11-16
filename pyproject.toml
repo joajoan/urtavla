@@ -9,9 +9,23 @@ authors = [
   { name = "Johan Brandby", email = "j@brandby.se" }
 ]
 requires-python = ">=3.12"
+keywords = ["datetime", "feature-engineering", "numpy", "time-series"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering",
+  "Typing :: Typed",
+]
 dependencies = [
     "numpy>=2.5.4",
 ]
+
+[project.urls]
+Repository = "https://github.com/joajoan/urtavla"
 
 [build-system]
 requires = ["uv_build>=0.11.23,<0.12.0"]
