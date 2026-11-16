@@ -2,6 +2,8 @@
 name = "urtavla"
 version = "0.1.0"
 description = "NumPy-based time feature extraction"
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [
   { name = "Johan Brandby", email = "j@brandby.se" }
 ]
