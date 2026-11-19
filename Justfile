@@ -7,11 +7,13 @@ clean:
 check TARGET=".":
   uv run ruff check {{TARGET}}
   uv run ty check {{TARGET}}
+  uv run mdformat --check README.md
 
 # Fix lint errors and format code
 format TARGET=".":
   uv run ruff check --fix {{TARGET}}
   uv run ruff format {{TARGET}}
+  uv run mdformat README.md
 
 # Run the test suite
 test TARGET=".":

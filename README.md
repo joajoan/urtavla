@@ -116,7 +116,7 @@ The project is managed with [uv](https://docs.astral.sh/uv/), and its recipes
 run through [just](https://just.systems/):
 
 ```sh
-just check   # lint with ruff and type-check with ty
+just check   # lint with ruff, type-check with ty, and check the Markdown
 just test    # run pytest, including the examples in the docstrings and here
-just format  # fix lint errors and format the code
+just format  # fix lint errors, format the code, and wrap the Markdown
 ```
