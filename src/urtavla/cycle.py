@@ -30,6 +30,15 @@ double from each to the next.
 array([ 2.,  4.,  8., 16., 32.])
 >>> cyclic_year(ts, period).shape
 (1, 10)
+
+The `CyclicYear` class holds a set of periods, for when the periods are
+chosen once and reused. An instance is then called with the timestamps
+alone.
+
+>>> from urtavla.cycle import CyclicYear
+>>> encoder = CyclicYear.from_dyadic(1, 5)
+>>> encoder(ts).shape
+(1, 10)
 """
 
 from __future__ import annotations
@@ -41,10 +50,13 @@ import numpy as np
 from urtavla import cardinal, ordinal
 
 if TYPE_CHECKING:
+    from typing import Final, Self
+
     from urtavla.typing import DtND, FloatND
 
 
 __all__ = (
+    "CyclicYear",
     "cyclic_calendar_day_of_month",
     "cyclic_calendar_day_of_year",
     "cyclic_calendar_month",
@@ -225,3 +237,44 @@ def cyclic_year(timestamp: DtND, period: FloatND) -> FloatND:
     year = ordinal.calendar_year(timestamp)[..., None]
     array = unit_circle(year / period)
     return array.reshape(*timestamp.shape, -1)
+
+
+class CyclicYear:
+    """Encode the calendar year against a fixed set of periods."""
+
+    period: Final[FloatND]
+    """Fixed weight array with the yearly periods."""
+
+    def __init__(self, period: FloatND) -> None:
+        """Store the periods to encode against.
+
+        Arguments:
+            period: Period of each cycle, in years.
+        """
+        self.period = period
+
+    def __call__(self, timestamp: DtND) -> FloatND:
+        """Encode the calendar year as one cycle per period.
+
+        Arguments:
+            timestamp: Timestamps of any shape and resolution.
+
+        Returns:
+            Sine and cosine of the year for each period, in the order of
+            the periods.
+        """
+        return cyclic_year(timestamp, period=self.period)
+
+    @classmethod
+    def from_dyadic(cls, minimum: int, maximum: int) -> Self:
+        """Create an encoder with periods that double.
+
+        Arguments:
+            minimum: Exponent of the shortest period.
+            maximum: Exponent of the longest period.
+
+        Returns:
+            Encoder that holds the periods, shortest first.
+        """
+        period = dyadic_period(minimum, maximum)
+        return cls(period)
