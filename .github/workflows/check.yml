@@ -1,0 +1,20 @@
+name: check
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.3.3
+      - uses: extractions/setup-just@v4
+      - run: uv sync --locked
+      - run: just check
+      - run: just test
