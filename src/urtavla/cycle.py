@@ -57,6 +57,7 @@ if TYPE_CHECKING:
 
 __all__ = (
     "CyclicYear",
+    "DyadicPeriod",
     "cyclic_calendar_day_of_month",
     "cyclic_calendar_day_of_year",
     "cyclic_calendar_month",
@@ -239,8 +240,8 @@ def cyclic_year(timestamp: DtND, period: FloatND) -> FloatND:
     return array.reshape(*timestamp.shape, -1)
 
 
-class CyclicYear:
-    """Encode the calendar year against a fixed set of periods."""
+class DyadicPeriod:
+    """Hold a fixed set of periods to measure the year against."""
 
     period: Final[FloatND]
     """Fixed weight array with the yearly periods."""
@@ -252,18 +253,6 @@ class CyclicYear:
             period: Period of each cycle, in years.
         """
         self.period = period
-
-    def __call__(self, timestamp: DtND) -> FloatND:
-        """Encode the calendar year as one cycle per period.
-
-        Arguments:
-            timestamp: Timestamps of any shape and resolution.
-
-        Returns:
-            Sine and cosine of the year for each period, in the order of
-            the periods.
-        """
-        return cyclic_year(timestamp, period=self.period)
 
     @classmethod
     def from_dyadic(cls, minimum: int, maximum: int) -> Self:
@@ -278,3 +267,19 @@ class CyclicYear:
         """
         period = dyadic_period(minimum, maximum)
         return cls(period)
+
+
+class CyclicYear(DyadicPeriod):
+    """Encode the calendar year against a fixed set of periods."""
+
+    def __call__(self, timestamp: DtND) -> FloatND:
+        """Encode the calendar year as one cycle per period.
+
+        Arguments:
+            timestamp: Timestamps of any shape and resolution.
+
+        Returns:
+            Sine and cosine of the year for each period, in the order of
+            the periods.
+        """
+        return cyclic_year(timestamp, period=self.period)
