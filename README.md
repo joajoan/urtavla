@@ -32,37 +32,6 @@ one axis. The examples all use the same two dates.
 
 ```
 
-### `cyclic_date`
-
-The `cyclic_date` function returns the position of each date within six cycles:
-the day of the year, the weekday, the day of the month, the month, and the week
-and the day of the ISO 8601 year. Each position is given as a sine and a cosine,
-which makes twelve columns. A position is divided by the true length of its
-cycle, so February and March both run the full circle.
-
-```python
->>> cyclic = urtavla.cyclic_date(ts)
->>> cyclic.shape
-(2, 12)
-
-```
-
-### `dummy_date`
-
-The `dummy_date` function returns five flags for each date. The flags mark a
-leap year, 29 February, the weekend, the first day of a month and the last day
-of a month, in that order. In the example, both dates fall in 2024, which is a
-leap year. The first date is also a leap day and the last day of its month,
-while the second is none of the other four.
-
-```python
->>> dummy = urtavla.dummy_date(ts)
->>> dummy
-array([[ True,  True, False, False,  True],
-       [ True, False, False, False, False]])
-
-```
-
 ### `cyclic_year`
 
 The year number does not repeat, so it has no cycle of its own. The
@@ -99,13 +68,45 @@ array([ 2.,  4.,  8., 16., 32.])
 
 ```
 
+### `cyclic_date`
+
+The `cyclic_date` function returns the whole date as cycles. It first gives the
+position of each date within six cycles: the day of the year, the weekday, the
+day of the month, the month, and the week and the day of the ISO 8601 year. Each
+position is given as a sine and a cosine, which makes twelve columns. A position
+is divided by the true length of its cycle, so February and March both run the
+full circle. The columns of `cyclic_year` follow, for the periods that you pass.
+
+```python
+>>> cyclic = urtavla.cyclic_date(ts, period)
+>>> cyclic.shape
+(2, 22)
+
+```
+
+### `dummy_date`
+
+The `dummy_date` function returns five flags for each date. The flags mark a
+leap year, 29 February, the weekend, the first day of a month and the last day
+of a month, in that order. In the example, both dates fall in 2024, which is a
+leap year. The first date is also a leap day and the last day of its month,
+while the second is none of the other four.
+
+```python
+>>> dummy = urtavla.dummy_date(ts)
+>>> dummy
+array([[ True,  True, False, False,  True],
+       [ True, False, False, False, False]])
+
+```
+
 ### Feature matrix
 
 All results have the shape of the timestamps in every axis but the last, so they
 join along the last axis into one matrix.
 
 ```python
->>> feature = np.concatenate([cyclic, year, dummy], axis=-1)
+>>> feature = np.concatenate([cyclic, dummy], axis=-1)
 >>> feature.shape
 (2, 27)
 

@@ -6,16 +6,16 @@ remove that jump. Each one turns a position into an angle and returns
 its sine and cosine, so that the end of a cycle lies next to its start.
 
 There are six cycles: the day of the year, the weekday, the day of the
-month, the month, and the week and the day of the ISO 8601 year. The
-`cyclic_date` function returns all six. Each position is divided by the
-true length of its cycle, so a month of 28 days and a month of 31 days
-both run the full circle.
+month, the month, and the week and the day of the ISO 8601 year. Each
+has a function of its own. Each position is divided by the true length
+of its cycle, so a month of 28 days and a month of 31 days both run the
+full circle.
 
 >>> import numpy as np
->>> from urtavla.cycle import cyclic_date
+>>> from urtavla.cycle import cyclic_calendar_month
 >>> ts = np.array(["2024-12-30"], dtype="datetime64[D]")
->>> cyclic_date(ts).shape
-(1, 12)
+>>> cyclic_calendar_month(ts).shape
+(1, 2)
 
 The year number does not repeat, so it has no cycle of its own. The
 `cyclic_year` function therefore measures the year against periods that
@@ -30,6 +30,13 @@ double from each to the next.
 array([ 2.,  4.,  8., 16., 32.])
 >>> cyclic_year(ts, period).shape
 (1, 10)
+
+The `cyclic_date` function returns the whole date: the six cycles, and
+after them the cycles of the year.
+
+>>> from urtavla.cycle import cyclic_date
+>>> cyclic_date(ts, period).shape
+(1, 22)
 
 The `CyclicYear` class holds a set of periods, for when the periods are
 chosen once and reused. An instance is then called with the timestamps
@@ -179,30 +186,6 @@ def cyclic_iso_day_of_year(timestamp: DtND) -> FloatND:
     return unit_circle(index / total)
 
 
-def cyclic_date(timestamp: DtND) -> FloatND:
-    """Encode the date as all six cycles.
-
-    Arguments:
-        timestamp: Timestamps of any shape and resolution.
-
-    Returns:
-        Sine and cosine of each cycle, as twelve columns along a new
-        last axis. The cycles come in the order that their functions are
-        defined in this module.
-    """
-    return np.concatenate(
-        [
-            cyclic_calendar_day_of_year(timestamp),
-            cyclic_day_of_week(timestamp),
-            cyclic_calendar_day_of_month(timestamp),
-            cyclic_calendar_month(timestamp),
-            cyclic_iso_week_of_year(timestamp),
-            cyclic_iso_day_of_year(timestamp),
-        ],
-        axis=-1,
-    )
-
-
 def dyadic_period(minimum: int, maximum: int) -> FloatND:
     """Return periods that double from each to the next.
 
@@ -283,3 +266,30 @@ class CyclicYear(DyadicPeriod):
             the periods.
         """
         return cyclic_year(timestamp, period=self.period)
+
+
+def cyclic_date(timestamp: DtND, period: FloatND) -> FloatND:
+    """Encode the date as all six cycles and the cycles of the year.
+
+    Arguments:
+        timestamp: Timestamps of any shape and resolution.
+        period: Period of each cycle of the year, in years.
+
+    Returns:
+        Sine and cosine of each cycle along a new last axis: twelve
+        columns for the six cycles, then two for each period. The
+        cycles come in the order that their functions are defined in
+        this module.
+    """
+    return np.concatenate(
+        [
+            cyclic_calendar_day_of_year(timestamp),
+            cyclic_day_of_week(timestamp),
+            cyclic_calendar_day_of_month(timestamp),
+            cyclic_calendar_month(timestamp),
+            cyclic_iso_week_of_year(timestamp),
+            cyclic_iso_day_of_year(timestamp),
+            cyclic_year(timestamp, period),
+        ],
+        axis=-1,
+    )

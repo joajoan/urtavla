@@ -117,18 +117,6 @@ def cyclic_array(
     )
 
 
-def test_cyclic_date(timestamp: DtND, cyclic_array: FloatND) -> None:
-    actual = cycle.cyclic_date(timestamp)
-    np.testing.assert_allclose(actual, cyclic_array, atol=1e-9)
-
-
-def test_cyclic_date_keeps_leading_shape(timestamp: DtND) -> None:
-    grid = timestamp.reshape(2, 2)
-    expected = cycle.cyclic_date(timestamp).reshape(2, 2, -1)
-    actual = cycle.cyclic_date(grid)
-    np.testing.assert_array_equal(actual, expected)
-
-
 def test_cyclic_year(timestamp: DtND) -> None:
     expected = [
         [0.0, 1.0, 0.0, 1.0],
@@ -146,4 +134,20 @@ def test_cyclic_year_keeps_leading_shape(timestamp: DtND) -> None:
     period = cycle.dyadic_period(1, 2)
     expected = cycle.cyclic_year(timestamp, period).reshape(2, 2, -1)
     actual = cycle.cyclic_year(grid, period)
+    np.testing.assert_array_equal(actual, expected)
+
+
+def test_cyclic_date(timestamp: DtND, cyclic_array: FloatND) -> None:
+    period = cycle.dyadic_period(1, 2)
+    year = cycle.cyclic_year(timestamp, period)
+    expected = np.concatenate([cyclic_array, year], axis=-1)
+    actual = cycle.cyclic_date(timestamp, period)
+    np.testing.assert_allclose(actual, expected, atol=1e-9)
+
+
+def test_cyclic_date_keeps_leading_shape(timestamp: DtND) -> None:
+    grid = timestamp.reshape(2, 2)
+    period = cycle.dyadic_period(1, 2)
+    expected = cycle.cyclic_date(timestamp, period).reshape(2, 2, -1)
+    actual = cycle.cyclic_date(grid, period)
     np.testing.assert_array_equal(actual, expected)
