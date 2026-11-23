@@ -17,11 +17,12 @@ from urtavla.cycle import (
     dyadic_period,
 )
 from urtavla.dummy import dummy_date
-from urtavla.encode import encode_date
+from urtavla.encode import EncodeDate, encode_date
 
 __all__ = (
     "CyclicDate",
     "CyclicYear",
+    "EncodeDate",
     "cyclic_date",
     "cyclic_year",
     "dummy_date",

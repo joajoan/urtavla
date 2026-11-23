@@ -128,6 +128,18 @@ True
 
 ```
 
+### `EncodeDate`
+
+The `EncodeDate` class holds the periods for `encode_date`, in the same way that
+`CyclicDate` holds them for `cyclic_date`.
+
+```python
+>>> encoder = urtavla.EncodeDate.from_dyadic(1, 5)
+>>> np.array_equal(encoder(ts), feature)
+True
+
+```
+
 ## Development
 
 The project is managed with [uv](https://docs.astral.sh/uv/), and its recipes

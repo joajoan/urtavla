@@ -13,6 +13,15 @@ has a single type.
 >>> period = dyadic_period(1, 5)
 >>> encode_date(ts, period).shape
 (1, 27)
+
+The `EncodeDate` class holds the periods of the year, for when the
+periods are chosen once and reused. An instance is then called with the
+timestamps alone.
+
+>>> from urtavla.encode import EncodeDate
+>>> encoder = EncodeDate.from_dyadic(1, 5)
+>>> encoder(ts).shape
+(1, 27)
 """
 
 from __future__ import annotations
@@ -22,12 +31,16 @@ from typing import TYPE_CHECKING
 import numpy as np
 
 from urtavla import cycle, dummy
+from urtavla.cycle import DyadicPeriod
 
 if TYPE_CHECKING:
     from urtavla.typing import DtND, FloatND
 
 
-__all__ = ("encode_date",)
+__all__ = (
+    "EncodeDate",
+    "encode_date",
+)
 
 
 def encode_date(timestamp: DtND, period: FloatND) -> FloatND:
@@ -45,3 +58,19 @@ def encode_date(timestamp: DtND, period: FloatND) -> FloatND:
     cyclic = cycle.cyclic_date(timestamp, period)
     flag = dummy.dummy_date(timestamp)
     return np.concatenate([cyclic, flag], axis=-1)
+
+
+class EncodeDate(DyadicPeriod):
+    """Encode the date as cycles and flags with fixed periods."""
+
+    def __call__(self, timestamp: DtND) -> FloatND:
+        """Encode the date as its cycles and its flags.
+
+        Arguments:
+            timestamp: Timestamps of any shape and resolution.
+
+        Returns:
+            Columns of `cyclic_date`, then those of `dummy_date`, along
+            a new last axis.
+        """
+        return encode_date(timestamp, period=self.period)
