@@ -49,16 +49,17 @@ cycle, so February and March both run the full circle.
 
 ### `dummy_date`
 
-The `dummy_date` function returns four flags for each date. The flags mark 29
-February, the weekend, the first day of a month and the last day of a month, in
-that order. In the example, 29 February 2024 is both a leap day and the last day
-of its month, while 30 December 2024 is none of the four.
+The `dummy_date` function returns five flags for each date. The flags mark a
+leap year, 29 February, the weekend, the first day of a month and the last day
+of a month, in that order. In the example, both dates fall in 2024, which is a
+leap year. The first date is also a leap day and the last day of its month,
+while the second is none of the other four.
 
 ```python
 >>> dummy = urtavla.dummy_date(ts)
 >>> dummy
-array([[ True, False, False,  True],
-       [False, False, False, False]])
+array([[ True,  True, False, False,  True],
+       [ True, False, False, False, False]])
 
 ```
 
@@ -106,7 +107,7 @@ join along the last axis into one matrix.
 ```python
 >>> feature = np.concatenate([cyclic, year, dummy], axis=-1)
 >>> feature.shape
-(2, 26)
+(2, 27)
 
 ```
 

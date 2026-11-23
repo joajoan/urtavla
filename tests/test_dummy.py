@@ -12,6 +12,16 @@ if TYPE_CHECKING:
 
 
 @pytest.fixture
+def leap_year() -> BoolND:
+    return np.array([True, True, False, False])
+
+
+def test_dummy_leap_year(timestamp: DtND, leap_year: BoolND) -> None:
+    actual = dummy.dummy_leap_year(timestamp)
+    np.testing.assert_array_equal(actual, leap_year)
+
+
+@pytest.fixture
 def leap_day() -> BoolND:
     return np.array([False, True, False, False])
 
@@ -53,12 +63,15 @@ def test_dummy_month_end(timestamp: DtND, month_end: BoolND) -> None:
 
 @pytest.fixture
 def dummy_array(
+    leap_year: BoolND,
     leap_day: BoolND,
     weekend: BoolND,
     month_start: BoolND,
     month_end: BoolND,
 ) -> BoolND:
-    return np.stack([leap_day, weekend, month_start, month_end], axis=-1)
+    return np.stack(
+        [leap_year, leap_day, weekend, month_start, month_end], axis=-1
+    )
 
 
 def test_dummy_date(

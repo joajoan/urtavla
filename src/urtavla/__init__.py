@@ -2,7 +2,7 @@
 
 The package turns timestamps into numbers that a model can use directly.
 The parts of a date that repeat become positions on a circle, and a few
-notable days become flags.
+yes-or-no facts about the date become flags.
 
 The name "urtavla" is Swedish for a clock face. A clock face shows the
 time on several dials, and each feature of this package can be viewed as

@@ -1,15 +1,16 @@
-"""Flags for notable days of the calendar.
+"""Flags that answer yes-or-no questions about a date.
 
-Each function in this module returns one flag per timestamp: true on the
-days it marks, and false on all others. The flags mark the leap day, the
-weekend, and the first and the last day of a month. The `dummy_date`
-function returns all four.
+A flag is true where the answer is yes, and false elsewhere. There are
+five flags. They tell whether a date falls in a leap year, on the leap
+day or on a weekend, and whether it is the first or the last day of a
+month. Each flag has a function of its own, and the `dummy_date`
+function returns all five.
 
 >>> import numpy as np
 >>> from urtavla.dummy import dummy_date
 >>> ts = np.array(["2024-02-29"], dtype="datetime64[D]")
 >>> dummy_date(ts)
-array([[ True, False, False,  True]])
+array([[ True,  True, False, False,  True]])
 """
 
 from __future__ import annotations
@@ -29,14 +30,32 @@ if TYPE_CHECKING:
 __all__ = (
     "dummy_date",
     "dummy_leap_day",
+    "dummy_leap_year",
     "dummy_month_end",
     "dummy_month_start",
     "dummy_weekend",
 )
 
 
+DAYS_IN_LEAP_YEAR: Final = 366
+"""Length that only a leap year has."""
+
 DAYS_IN_FEBRUARY: Final = 29
 """Length that only February in a leap year has."""
+
+
+def dummy_leap_year(timestamp: DtND) -> BoolND:
+    """Flag every day of a leap year.
+
+    A leap year is recognised by its length, not by its year number.
+
+    Arguments:
+        timestamp: Timestamps of any shape and resolution.
+
+    Returns:
+        True on every day of a year that has 366 days.
+    """
+    return cardinal.calendar_days_in_year(timestamp) == DAYS_IN_LEAP_YEAR
 
 
 def dummy_leap_day(timestamp: DtND) -> BoolND:
@@ -100,7 +119,7 @@ def dummy_month_end(timestamp: DtND) -> BoolND:
 
 
 def dummy_date(timestamp: DtND) -> BoolND:
-    """Stack the four flags along a new last axis.
+    """Stack the five flags along a new last axis.
 
     Arguments:
         timestamp: Timestamps of any shape and resolution.
@@ -111,6 +130,7 @@ def dummy_date(timestamp: DtND) -> BoolND:
     """
     return np.stack(
         [
+            dummy_leap_year(timestamp),
             dummy_leap_day(timestamp),
             dummy_weekend(timestamp),
             dummy_month_start(timestamp),
