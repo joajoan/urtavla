@@ -84,6 +84,18 @@ full circle. The columns of `cyclic_year` follow, for the periods that you pass.
 
 ```
 
+### `CyclicDate`
+
+The `CyclicDate` class holds the periods for `cyclic_date`, in the same way that
+`CyclicYear` holds them for `cyclic_year`.
+
+```python
+>>> encoder = urtavla.CyclicDate.from_dyadic(1, 5)
+>>> np.array_equal(encoder(ts), cyclic)
+True
+
+```
+
 ### `dummy_date`
 
 The `dummy_date` function returns five flags for each date. The flags mark a

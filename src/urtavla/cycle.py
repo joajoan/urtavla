@@ -38,14 +38,17 @@ after them the cycles of the year.
 >>> cyclic_date(ts, period).shape
 (1, 22)
 
-The `CyclicYear` class holds a set of periods, for when the periods are
-chosen once and reused. An instance is then called with the timestamps
-alone.
+The `CyclicYear` and `CyclicDate` classes hold a set of periods, for
+when the periods are chosen once and reused. An instance is then called
+with the timestamps alone.
 
->>> from urtavla.cycle import CyclicYear
+>>> from urtavla.cycle import CyclicDate, CyclicYear
 >>> encoder = CyclicYear.from_dyadic(1, 5)
 >>> encoder(ts).shape
 (1, 10)
+>>> encoder = CyclicDate.from_dyadic(1, 5)
+>>> encoder(ts).shape
+(1, 22)
 """
 
 from __future__ import annotations
@@ -63,6 +66,7 @@ if TYPE_CHECKING:
 
 
 __all__ = (
+    "CyclicDate",
     "CyclicYear",
     "DyadicPeriod",
     "cyclic_calendar_day_of_month",
@@ -293,3 +297,19 @@ def cyclic_date(timestamp: DtND, period: FloatND) -> FloatND:
         ],
         axis=-1,
     )
+
+
+class CyclicDate(DyadicPeriod):
+    """Encode the date against a fixed set of periods for the year."""
+
+    def __call__(self, timestamp: DtND) -> FloatND:
+        """Encode the date as all six cycles and the cycles of the year.
+
+        Arguments:
+            timestamp: Timestamps of any shape and resolution.
+
+        Returns:
+            Sine and cosine of each cycle: the six cycles first, then
+            the year for each period, in the order of the periods.
+        """
+        return cyclic_date(timestamp, period=self.period)
