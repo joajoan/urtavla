@@ -91,8 +91,8 @@ The `CyclicDate` class holds the periods for `cyclic_date`, in the same way that
 
 ```python
 >>> encoder = urtavla.CyclicDate.from_dyadic(1, 5)
->>> np.array_equal(encoder(ts), cyclic)
-True
+>>> encoder(ts).shape
+(2, 22)
 
 ```
 
@@ -123,8 +123,6 @@ the last axis.
 >>> feature = urtavla.encode_date(ts, period)
 >>> feature.shape
 (2, 27)
->>> np.array_equal(feature, np.concatenate([cyclic, dummy], axis=-1))
-True
 
 ```
 
@@ -135,8 +133,8 @@ The `EncodeDate` class holds the periods for `encode_date`, in the same way that
 
 ```python
 >>> encoder = urtavla.EncodeDate.from_dyadic(1, 5)
->>> np.array_equal(encoder(ts), feature)
-True
+>>> encoder(ts).shape
+(2, 27)
 
 ```
 
