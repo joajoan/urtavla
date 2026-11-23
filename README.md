@@ -112,15 +112,19 @@ array([[ True,  True, False, False,  True],
 
 ```
 
-### Feature matrix
+### `encode_date`
 
-All results have the shape of the timestamps in every axis but the last, so they
-join along the last axis into one matrix.
+The `encode_date` function returns every feature above as one matrix. The cycles
+of `cyclic_date` come first, and the flags of `dummy_date` follow as zeros and
+ones, because a matrix has a single type. The result equals the two joined along
+the last axis.
 
 ```python
->>> feature = np.concatenate([cyclic, dummy], axis=-1)
+>>> feature = urtavla.encode_date(ts, period)
 >>> feature.shape
 (2, 27)
+>>> np.array_equal(feature, np.concatenate([cyclic, dummy], axis=-1))
+True
 
 ```
 
