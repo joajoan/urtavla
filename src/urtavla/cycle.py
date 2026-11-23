@@ -102,7 +102,7 @@ def cyclic_calendar_day_of_year(timestamp: DtND) -> FloatND:
 
 
 def cyclic_day_of_week(timestamp: DtND) -> FloatND:
-    """Encode the weekday as a cycle, so Sunday sits beside Monday.
+    """Encode the weekday as a cycle joining Sunday to Monday.
 
     Arguments:
         timestamp: Timestamps of any shape and resolution.
@@ -132,7 +132,7 @@ def cyclic_calendar_day_of_month(timestamp: DtND) -> FloatND:
 
 
 def cyclic_calendar_month(timestamp: DtND) -> FloatND:
-    """Encode the calendar month as a cycle, so December meets January.
+    """Encode the calendar month as a cycle joining December to January.
 
     Arguments:
         timestamp: Timestamps of any shape and resolution.

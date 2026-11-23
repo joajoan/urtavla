@@ -36,7 +36,7 @@ __all__ = (
 
 
 DAYS_IN_FEBRUARY: Final = 29
-"""Length of February in a leap year, which no other month has."""
+"""Length that only February in a leap year has."""
 
 
 def dummy_leap_day(timestamp: DtND) -> BoolND:

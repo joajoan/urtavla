@@ -43,7 +43,10 @@ __all__ = (
 
 
 EPOCH: Final = np.datetime64(0, "D")
-"""First day of the UNIX epoch, 1 January 1970."""
+"""First day of the UNIX epoch.
+
+The epoch starts on 1 January 1970.
+"""
 
 
 EPOCH_YEAR: Final = 1970
@@ -51,7 +54,10 @@ EPOCH_YEAR: Final = 1970
 
 
 THURSDAY: Final = 3
-"""Weekday index of Thursday, the weekday of the epoch."""
+"""Weekday index of Thursday.
+
+The epoch starts on a Thursday.
+"""
 
 
 DAY: Final = np.timedelta64(1, "D")

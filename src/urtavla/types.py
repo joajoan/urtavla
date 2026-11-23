@@ -40,7 +40,7 @@ __all__ = (
 
 
 def as_day(timestamp: DtND | IntND) -> DtND:
-    """Cast timestamps to day resolution, rounding down.
+    """Round timestamps down to day resolution.
 
     Arguments:
         timestamp: Timestamps of any shape and resolution, or integer
@@ -53,7 +53,7 @@ def as_day(timestamp: DtND | IntND) -> DtND:
 
 
 def as_month(timestamp: DtND | IntND) -> DtND:
-    """Cast timestamps to month resolution, rounding down.
+    """Round timestamps down to month resolution.
 
     Arguments:
         timestamp: Timestamps of any shape and resolution, or integer
@@ -66,7 +66,7 @@ def as_month(timestamp: DtND | IntND) -> DtND:
 
 
 def as_year(timestamp: DtND | IntND) -> DtND:
-    """Cast timestamps to year resolution, rounding down.
+    """Round timestamps down to year resolution.
 
     Arguments:
         timestamp: Timestamps of any shape and resolution, or integer
@@ -92,7 +92,7 @@ def as_int(value: DtND | TdND) -> IntND:
 
 
 def as_days(delta: TdND) -> TdND:
-    """Cast durations to whole days, rounding down.
+    """Round durations down to whole days.
 
     Arguments:
         delta: Durations of any shape and resolution.

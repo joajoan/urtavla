@@ -1,4 +1,4 @@
-"""Positions of a timestamp within its year, month and week.
+"""Positions of a timestamp in the calendar.
 
 Each function in this module returns one position as an integer. Months,
 weeks and days are counted from zero, so January is month 0 and Monday
@@ -58,7 +58,7 @@ def calendar_year(timestamp: DtND) -> IntND:
 
 
 def calendar_month(timestamp: DtND) -> IntND:
-    """Return the month of the calendar year, counted from zero.
+    """Return the zero-based month of the calendar year.
 
     Arguments:
         timestamp: Timestamps of any shape and resolution.
@@ -71,7 +71,7 @@ def calendar_month(timestamp: DtND) -> IntND:
 
 
 def calendar_day_of_year(timestamp: DtND) -> IntND:
-    """Return the day of the calendar year, counted from zero.
+    """Return the zero-based day of the calendar year.
 
     Arguments:
         timestamp: Timestamps of any shape and resolution.
@@ -86,7 +86,7 @@ def calendar_day_of_year(timestamp: DtND) -> IntND:
 
 
 def calendar_day_of_month(timestamp: DtND) -> IntND:
-    """Return the day of the calendar month, counted from zero.
+    """Return the zero-based day of the calendar month.
 
     Arguments:
         timestamp: Timestamps of any shape and resolution.
@@ -101,7 +101,7 @@ def calendar_day_of_month(timestamp: DtND) -> IntND:
 
 
 def day_of_week(timestamp: DtND) -> IntND:
-    """Return the weekday, counted from zero on Monday.
+    """Return the zero-based weekday starting on Monday.
 
     The calendar year and the ISO year number the weekdays in the same
     way, so one function serves both.
@@ -135,7 +135,7 @@ def iso_year(timestamp: DtND) -> IntND:
 
 
 def iso_week_of_year(timestamp: DtND) -> IntND:
-    """Return the week of the ISO 8601 year, counted from zero.
+    """Return the zero-based week of the ISO 8601 year.
 
     Arguments:
         timestamp: Timestamps of any shape and resolution.
@@ -149,7 +149,7 @@ def iso_week_of_year(timestamp: DtND) -> IntND:
 
 
 def iso_day_of_year(timestamp: DtND) -> IntND:
-    """Return the day of the ISO 8601 year, counted from zero.
+    """Return the zero-based day of the ISO 8601 year.
 
     Arguments:
         timestamp: Timestamps of any shape and resolution.
